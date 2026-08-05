@@ -206,7 +206,8 @@ String SystemStats::getComputerName()
 
 String SystemStats::getUserLanguage()
 {
-   #if JUCE_BSD
+   // OHOS 用 musl libc，无 glibc 的 _NL_ADDRESS_LANG_AB locale enum；走 BSD 路径
+   #if JUCE_BSD || defined(__OHOS__)
     if (auto langEnv = getenv ("LANG"))
         return String::fromUTF8 (langEnv).upToLastOccurrenceOf (".UTF-8", false, true);
 
@@ -218,7 +219,7 @@ String SystemStats::getUserLanguage()
 
 String SystemStats::getUserRegion()
 {
-   #if JUCE_BSD
+   #if JUCE_BSD || defined(__OHOS__)
     return {};
    #else
     return getLocaleValue (_NL_ADDRESS_COUNTRY_AB2);

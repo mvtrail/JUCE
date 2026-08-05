@@ -60,7 +60,12 @@ bool Thread::createNativeThread (Priority)
 void Thread::killThread()
 {
     if (threadHandle != nullptr)
+    {
+       // OHOS musl libc 无 pthread_cancel；空操作（业务层 JuceEngine 不调用 killThread）
+       #if !defined(__OHOS__)
         pthread_cancel ((pthread_t) threadHandle.load());
+       #endif
+    }
 }
 
 // Until we implement Nice awareness, these don't do anything on Linux.
